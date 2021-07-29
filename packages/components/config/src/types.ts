@@ -137,6 +137,18 @@ export interface SelectConfig {
   valueKey: string
 }
 
+export interface TimePickerConfig {
+  borderless: boolean
+  clearable: boolean
+  clearIcon: string
+  size: FormSize
+  suffix: string
+}
+
+export interface TimeRangePickerConfig extends TimePickerConfig {
+  separator: string
+}
+
 // Data Display
 export interface AvatarConfig {
   gap: number
@@ -311,6 +323,8 @@ export interface GlobalConfig {
   radio: RadioConfig
   rate: RateConfig
   select: SelectConfig
+  timePicker: TimePickerConfig
+  timeRangePicker: TimeRangePickerConfig
   // Data Display
   avatar: AvatarConfig
   badge: BadgeConfig
