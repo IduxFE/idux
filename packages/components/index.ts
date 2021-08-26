@@ -26,6 +26,7 @@ import { IxRate } from '@idux/components/rate'
 import { IxSelect, IxSelectOption, IxSelectOptionGroup } from '@idux/components/select'
 import { IxSwitch } from '@idux/components/switch'
 import { IxTextarea } from '@idux/components/textarea'
+import { IxTimePicker } from '@idux/components/time-picker'
 // import Data Display
 import { IxTable } from '@idux/components/table'
 import { IxAvatar } from '@idux/components/avatar'
@@ -88,6 +89,7 @@ const components = [
   IxSelectOption,
   IxSelectOptionGroup,
   IxSwitch,
+  IxTimePicker,
   // components Data Display
   IxTable,
   IxAvatar,
