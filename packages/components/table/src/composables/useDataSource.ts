@@ -43,7 +43,7 @@ export function useDataSource(
     const expandedKeys = expandedRowKeys.value
     if (expandedKeys.length > 0) {
       const data: FlattedData[] = []
-      paginatedData.value.forEach(item => data.push(...flattenData(item, 0, expandedKeys)))
+      paginatedData.value.forEach(item => data.push(...flatData(item, 0, expandedKeys)))
       return data
     }
     return paginatedData.value.map(item => ({ ...item, expanded: false, level: 0 }))
@@ -92,13 +92,13 @@ function covertDataMap(mergedData: MergedData[], map: Map<Key, MergedData>) {
   })
 }
 
-function flattenData(data: MergedData, level: number, expandedRowKeys: Key[]) {
+function flatData(data: MergedData, level: number, expandedRowKeys: Key[]) {
   const { children, parentKey, record, rowKey } = data
   const expanded = expandedRowKeys.includes(rowKey)
   const result: FlattedData[] = [{ children, parentKey, record, rowKey, level, expanded }]
 
   if (expanded && children) {
-    children.forEach(subRecord => result.push(...flattenData(subRecord, level + 1, expandedRowKeys)))
+    children.forEach(subRecord => result.push(...flatData(subRecord, level + 1, expandedRowKeys)))
   }
 
   return result

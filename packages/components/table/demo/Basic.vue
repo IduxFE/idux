@@ -1,41 +1,33 @@
 <template>
   <IxTable :columns="columns" :dataSource="data">
-    <template #nameTitle="{ title }">
-      <IxIcon name="star"></IxIcon>
-      <span> {{ title }}</span>
-    </template>
-    <template #nameRender="{ value }">
+    <template #name="{ value }">
       <a>{{ value }}</a>
     </template>
-    <template #customExpand="{ record }">
-      <p>{{ record.name }}</p>
+    <template #action="{ record }">
+      <a style="margin-right: 8px">Invite {{ record.name }}</a>
+      <a>Delete</a>
     </template>
   </IxTable>
 </template>
 
 <script lang="ts" setup>
-import { h } from 'vue'
 import { TableColumn, TableColumnRenderOption } from '@idux/components/table'
+import { h } from 'vue'
 import { IxTag } from '@idux/components/tag'
-import { IxSpace } from '@idux/components/space'
 
 interface Data {
-  id: string
+  id: number
   name: string
   age: number
   address: string
   tags: string[]
-  children?: Data[]
 }
 
 const columns: TableColumn<Data>[] = [
-  { type: 'selectable', onChange: console.log, disabled: record => !!record.children },
-  { type: 'expandable' },
   {
     title: 'Name',
     dataKey: 'name',
-    customRender: 'nameRender',
-    customTitle: 'nameTitle',
+    customRender: 'name',
   },
   {
     title: 'Age',
@@ -60,33 +52,18 @@ const columns: TableColumn<Data>[] = [
   {
     title: 'Action',
     key: 'action',
-    customRender: ({ record }) =>
-      h(IxSpace, null, { default: () => [h('a', `Invite ${record.name}`), h('a', `Delete`)] }),
+    customRender: 'action',
   },
 ]
+
 const data: Data[] = []
 for (let index = 0; index < 100; index++) {
-  let children: Data[] | undefined
-  if (index % 3 !== 0) {
-    children = []
-    for (let j = 0; j < 3; j++) {
-      children.push({
-        id: `${index}-${j}`,
-        name: `name ${index}-${j}`,
-        age: index,
-        address: `New York No. ${index}-${j} Lake Park`,
-        tags: [],
-      })
-    }
-  }
-
   data.push({
-    id: `${index}`,
-    name: `name ${index}`,
-    age: index,
-    address: `New York No. ${index} Lake Park`,
+    id: index,
+    name: `Edrward ${index}`,
+    age: 32,
+    address: `London Park no. ${index}`,
     tags: ['nice', 'developer'],
-    children,
   })
 }
 </script>

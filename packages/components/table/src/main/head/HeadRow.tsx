@@ -11,20 +11,21 @@ export default defineComponent({
   props: tableHeadRowProps,
   setup(props) {
     const { headRowTag } = inject(tableToken)!
-
     return () => {
       const children = props.columns
         .filter(column => column.titleColSpan !== 0 && (column as TableColumnMergedBaseExtra).titleRowSpan !== 0)
-        .map((column, index) => {
+        .map(column => {
           if ('type' in column) {
             if (column.type === 'expandable') {
               return <HeadColExpandable></HeadColExpandable>
             } else if (column.type === 'selectable') {
               return <HeadColSelectable></HeadColSelectable>
+            } else if (column.type === 'scroll-bar') {
+              return renderCol(column)
             }
             return null
           }
-          return renderCol(column, index)
+          return renderCol(column)
         })
 
       const HeadRowTag = headRowTag.value as any
@@ -33,7 +34,7 @@ export default defineComponent({
   },
 })
 
-function renderCol(column: TableColumnMergedBaseExtra, index: number) {
+function renderCol(column: TableColumnMergedBaseExtra) {
   const {
     titleColSpan: colSpan,
     titleRowSpan: rowSpan,
@@ -42,10 +43,24 @@ function renderCol(column: TableColumnMergedBaseExtra, index: number) {
     colStart,
     colEnd,
     ellipsis,
+    fixed,
     title,
     customTitle,
-    key = index,
+    key,
   } = column
-  const colProps = { colSpan, rowSpan, additional, align, colStart, colEnd, ellipsis, title, customTitle, key, index }
+  const colProps = {
+    colSpan,
+    rowSpan,
+    additional,
+    align,
+    colStart,
+    colEnd,
+    ellipsis,
+    fixed,
+    title,
+    customTitle,
+    key,
+    cellKey: key,
+  }
   return <HeadCol {...colProps}></HeadCol>
 }

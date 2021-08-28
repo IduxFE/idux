@@ -3,20 +3,21 @@ import type { CSSProperties, DefineComponent, HTMLAttributes, VNodeTypes } from 
 import type { BreakpointKey } from '@idux/cdk/breakpoint'
 import type { IxInnerPropTypes, IxPublicPropTypes } from '@idux/cdk/utils'
 import type { EmptyProps } from '@idux/components/empty'
+import type { HeaderProps } from '@idux/components/header'
 import type { PaginationProps } from '@idux/components/pagination'
 import type { SpinProps } from '@idux/components/spin'
-import type { TableColumnMergedExtra } from './composables/useColumns'
+import type { TableColumnMerged, TableColumnMergedExtra } from './composables/useColumns'
 
 import { IxPropTypes } from '@idux/cdk/utils'
 
 export const tableProps = {
   borderless: IxPropTypes.bool,
-
-  columns: IxPropTypes.array<TableColumn>().isRequired,
-  dataSource: IxPropTypes.array().isRequired,
+  columns: IxPropTypes.array<TableColumn<any>>().def(() => []),
+  dataSource: IxPropTypes.array().def(() => []),
   empty: IxPropTypes.oneOfType<string | EmptyProps>([String, IxPropTypes.object()]),
   expandedRowKeys: IxPropTypes.array<Key>().def(() => []),
   extra: IxPropTypes.object<TableExtra>(),
+  header: IxPropTypes.oneOfType([String, IxPropTypes.object<HeaderProps>()]),
   headless: IxPropTypes.bool,
   pagination: IxPropTypes.object<TablePagination | null>(),
   rowClassName: IxPropTypes.func<(record: unknown, index: number) => string>(),
@@ -25,6 +26,7 @@ export const tableProps = {
   scroll: IxPropTypes.object<TableScroll>(),
   size: IxPropTypes.oneOf<TableSize>(['large', 'medium', 'small']),
   spin: IxPropTypes.oneOfType([Boolean, IxPropTypes.object<SpinProps>()]),
+  sticky: IxPropTypes.oneOfType([Boolean, IxPropTypes.object<TableSticky>()]),
   tableLayout: IxPropTypes.oneOf(['auto', 'fixed'] as const),
   tags: IxPropTypes.object<TableTags>(),
 
@@ -52,7 +54,7 @@ export interface TableColumnCommon<T = unknown> {
   responsive?: BreakpointKey[]
   rowSpan?: (record: T, index: number) => number
   titleColSpan?: number
-  width?: Key
+  width?: string | number
 }
 
 export interface TableColumnBase<T = unknown> extends TableColumnCommon<T> {
@@ -138,8 +140,8 @@ export type TablePaginationPosition = 'topStart' | 'top' | 'topEnd' | 'bottomSta
 
 export interface TableScroll {
   toTopOnChange?: boolean
-  x?: Key | boolean
-  y?: Key
+  x?: string | number
+  y?: string | number
 }
 
 export type TableSize = 'large' | 'medium' | 'small'
@@ -167,6 +169,13 @@ export interface TableColumnSortable<T = unknown> {
   onSort: (curr: T, next: T) => number
 }
 
+export interface TableSticky {
+  offsetHead?: number
+  offsetFoot?: number
+  offsetScroll?: number
+  container?: Window | HTMLElement
+}
+
 export type Key = string | number
 
 /** private components */
@@ -179,12 +188,13 @@ export type TableHeadRowProps = IxInnerPropTypes<typeof tableHeadRowProps>
 export const tableHeadColProps = {
   additional: IxPropTypes.object(),
   align: IxPropTypes.oneOf<TableColumnAlign>(['start', 'center', 'end']),
+  cellKey: IxPropTypes.oneOfType([String, Number]).isRequired,
   colSpan: IxPropTypes.number,
   rowSpan: IxPropTypes.number,
-
-  colStart: IxPropTypes.number,
-  colEnd: IxPropTypes.number,
+  colStart: IxPropTypes.number.isRequired,
+  colEnd: IxPropTypes.number.isRequired,
   ellipsis: IxPropTypes.bool,
+  fixed: IxPropTypes.oneOf<TableColumnFixed>(['start', 'end']),
   hasChildren: IxPropTypes.bool,
   title: IxPropTypes.string,
 
@@ -206,11 +216,12 @@ export type TableBodyRowProps = IxInnerPropTypes<typeof tableBodyRowProps>
 export const tableBodyColProps = {
   additional: IxPropTypes.object(),
   align: IxPropTypes.oneOf<TableColumnAlign>(['start', 'center', 'end']),
+  cellKey: IxPropTypes.oneOfType([String, Number]).isRequired,
   colSpan: IxPropTypes.number,
   rowSpan: IxPropTypes.number,
-
   dataKey: IxPropTypes.oneOfType([String, Number, IxPropTypes.array<Key>()]),
   ellipsis: IxPropTypes.bool,
+  fixed: IxPropTypes.oneOf<TableColumnFixed>(['start', 'end']),
   index: IxPropTypes.number.isRequired,
   record: IxPropTypes.any.isRequired,
 
@@ -240,3 +251,16 @@ export const tableBodyColSelectableProps = {
 }
 
 export type TableBodyColSelectableProps = IxInnerPropTypes<typeof tableBodyColSelectableProps>
+
+export const tableMeasureCellProps = {
+  cellKey: IxPropTypes.oneOfType([String, Number]).isRequired,
+  onCellResize: IxPropTypes.func<(key: Key, width: number) => void>().isRequired,
+}
+
+export type TableMeasureCellProps = IxInnerPropTypes<typeof tableMeasureCellProps>
+
+export const tableColGroupProps = {
+  columns: IxPropTypes.array<TableColumnMerged>().isRequired,
+}
+
+export type TableColGroupProps = IxInnerPropTypes<typeof tableColGroupProps>

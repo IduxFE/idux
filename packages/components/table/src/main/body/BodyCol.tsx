@@ -1,4 +1,4 @@
-import type { ComputedRef, Slots } from 'vue'
+import type { ComputedRef, Slots, StyleValue } from 'vue'
 import type { TableBodyColProps } from '../../types'
 
 import { computed, defineComponent, inject } from 'vue'
@@ -11,9 +11,53 @@ import { getColTitle } from '../../utils'
 export default defineComponent({
   props: tableBodyColProps,
   setup(props) {
-    const { bodyColTag, slots } = inject(tableToken)!
-    const classes = useClasses(props)
+    const { slots, columnOffsets, fixedColumnKeys, isSticky, bodyColTag } = inject(tableToken)!
     const dataValue = useDataValue(props)
+
+    const isFixedFirstStartKey = computed(() => fixedColumnKeys.value.firstStartKey === props.cellKey)
+    const isFixedLastStartKey = computed(() => fixedColumnKeys.value.lastStartKey === props.cellKey)
+    const isFixedFirstEndKey = computed(() => fixedColumnKeys.value.firstEndKey === props.cellKey)
+    const isFixedLastEndKey = computed(() => fixedColumnKeys.value.lastEndKey === props.cellKey)
+
+    const fixedOffset = computed(() => {
+      const { fixed } = props
+      const { starts, ends } = columnOffsets.value
+      if (fixed === 'start') {
+        return starts[props.colStart]
+      }
+      if (fixed === 'end') {
+        return ends[props.colEnd]
+      }
+      return
+    })
+
+    const classes = computed(() => {
+      const { align, ellipsis, fixed } = props
+      const prefixCls = 'ix-table-td'
+      return {
+        [prefixCls]: true,
+        [`${prefixCls}-align-${align}`]: align,
+        [`${prefixCls}-ellipsis`]: ellipsis,
+        [`${prefixCls}-fix-start`]: fixed === 'start',
+        [`${prefixCls}-fix-start-first`]: isFixedFirstStartKey.value,
+        [`${prefixCls}-fix-start-last`]: isFixedLastStartKey.value,
+        [`${prefixCls}-fix-end`]: fixed === 'end',
+        [`${prefixCls}-fix-end-first`]: isFixedFirstEndKey.value,
+        [`${prefixCls}-fix-end-last`]: isFixedLastEndKey.value,
+        [`${prefixCls}-fix-sticky`]: fixed && isSticky.value,
+      }
+    })
+
+    const style = computed<StyleValue>(() => {
+      const { fixed } = props
+      const offset = fixedOffset.value
+      // TODO: use start and end replace left and right
+      return {
+        position: fixed ? 'sticky' : undefined,
+        left: fixed === 'start' ? offset : undefined,
+        right: fixed === 'end' ? offset : undefined,
+      }
+    })
 
     return () => {
       const children = renderChildren(props, slots, dataValue)
@@ -23,6 +67,7 @@ export default defineComponent({
         colSpan: colSpan === 1 ? undefined : colSpan,
         rowSpan: rowSpan === 1 ? undefined : rowSpan,
         class: classes.value,
+        style: style.value,
       }
 
       const BodyColTag = bodyColTag.value as any
@@ -34,18 +79,6 @@ export default defineComponent({
     }
   },
 })
-
-function useClasses(props: TableBodyColProps) {
-  return computed(() => {
-    const { align, ellipsis } = props
-    const prefixCls = 'ix-table-td'
-    return {
-      [prefixCls]: true,
-      [`${prefixCls}-align-${align}`]: true,
-      [`${prefixCls}-ellipsis`]: ellipsis,
-    }
-  })
-}
 
 function useDataValue(props: TableBodyColProps) {
   return computed(() => {

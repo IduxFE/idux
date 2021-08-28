@@ -141,3 +141,34 @@ export function throttleRAF<T extends (...args: any[]) => void>(
 }
 
 export const noop = (): void => {}
+
+function isStyleVisible(element: HTMLElement | SVGElement) {
+  const { display, visibility, opacity } = getComputedStyle(element)
+
+  return display !== 'none' && visibility !== 'hidden' && visibility !== 'collapse' && opacity !== '0'
+}
+
+function isAttributeVisible(element: HTMLElement | SVGElement) {
+  let box: DOMRect | undefined
+  if (element instanceof HTMLElement) {
+    if (element.offsetParent) {
+      return true
+    }
+    box = element.getBoundingClientRect()
+  } else if ((element as SVGGraphicsElement).getBBox) {
+    box = (element as SVGGraphicsElement).getBBox()
+  }
+
+  if (box && box.width && box.height) {
+    return true
+  }
+  return false
+}
+
+export function isVisibleElement(element: HTMLElement | SVGElement | undefined): boolean {
+  if (!element) {
+    return false
+  }
+
+  return isStyleVisible(element) && isAttributeVisible(element)
+}

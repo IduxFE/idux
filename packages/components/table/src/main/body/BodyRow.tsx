@@ -185,13 +185,27 @@ function renderChildren(
 function renderCol(
   props: TableBodyRowProps,
   column: TableColumnMergedBase,
-  defaultKey: number,
+  colIndex: number,
   colSpan: number | undefined,
   rowSpan: number | undefined,
 ) {
   const { index, record } = props
-  const { key = defaultKey, additional, align, dataKey, ellipsis, customRender } = column
-  const colProps = { index, record, key, colSpan, rowSpan, additional, align, dataKey, ellipsis, customRender }
+  const { key = colIndex, additional, align, dataKey, ellipsis, customRender } = column
+  const colProps = {
+    index,
+    record,
+    key,
+    cellKey: key,
+    colSpan,
+    rowSpan,
+    colStart: colIndex,
+    colEnd: colIndex,
+    additional,
+    align,
+    dataKey,
+    ellipsis,
+    customRender,
+  }
   return <BodyCol {...colProps}></BodyCol>
 }
 

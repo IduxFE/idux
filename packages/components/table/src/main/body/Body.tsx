@@ -1,13 +1,15 @@
-import { defineComponent, inject, VNodeTypes } from 'vue'
+import { computed, defineComponent, inject, VNodeTypes } from 'vue'
 import { isString } from 'lodash-es'
 import { IxEmpty } from '@idux/components/empty'
 import { tableToken } from '../../token'
 import BodyRow from './BodyRow'
 import BodyRowSingle from './BodyRowSingle'
+import MeasureRow from './MeasureRow'
 
 export default defineComponent({
   setup() {
-    const { props, slots, flattedData, bodyTag } = inject(tableToken)!
+    const { props, slots, flattedData, scrollHorizontal, scrollVertical, isSticky, bodyTag } = inject(tableToken)!
+    const showMeasure = computed(() => scrollHorizontal.value || scrollVertical.value || isSticky.value)
     return () => {
       let children: VNodeTypes[] = []
       if (slots.alert) {
@@ -31,7 +33,12 @@ export default defineComponent({
       }
 
       const BodyTag = bodyTag.value as any
-      return <BodyTag class="ix-table-tbody">{children}</BodyTag>
+      return (
+        <BodyTag class="ix-table-tbody">
+          {showMeasure.value ? <MeasureRow></MeasureRow> : null}
+          {children}
+        </BodyTag>
+      )
     }
   },
 })

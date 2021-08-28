@@ -91,7 +91,7 @@ async function transformWithEsbuild(code: string, filename: string, options?: Tr
       ...result,
       map: result.map ? JSON.parse(result.map) : null,
     }
-  } catch (e) {
+  } catch (e: any) {
     // patch error information
     if (e.errors) {
       e.frame = ''

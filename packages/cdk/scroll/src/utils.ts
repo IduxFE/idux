@@ -1,6 +1,6 @@
 import type { EasingFn } from '@idux/cdk/utils'
 
-import { isNil, isObject } from 'lodash-es'
+import { isNil, isObject, isUndefined } from 'lodash-es'
 import { easeInOutCubic, rAF } from '@idux/cdk/utils'
 
 export interface ScrollOptions {
@@ -90,4 +90,56 @@ export const scrollToTop = (options: ScrollToTopOptions = {}): void => {
   }
 
   rAF(frameFunc)
+}
+
+let cachedScrollBarSize: number
+
+export function getScrollBarSize(target?: HTMLElement): number {
+  if (isUndefined(document)) {
+    return 0
+  }
+
+  if (target) {
+    const { width } = getComputedStyle(target, '::-webkit-scrollbar')
+    const match = width.match(/^(.*)px$/)
+    const value = Number(match?.[1])
+    if (!Number.isNaN(value)) {
+      return value
+    }
+  }
+
+  if (cachedScrollBarSize === undefined) {
+    const inner = document.createElement('div')
+    inner.style.width = '100%'
+    inner.style.height = '200px'
+
+    const outer = document.createElement('div')
+    const outerStyle = outer.style
+
+    outerStyle.position = 'absolute'
+    outerStyle.top = '0'
+    outerStyle.left = '0'
+    outerStyle.pointerEvents = 'none'
+    outerStyle.visibility = 'hidden'
+    outerStyle.width = '200px'
+    outerStyle.height = '150px'
+    outerStyle.overflow = 'hidden'
+
+    outer.appendChild(inner)
+
+    document.body.appendChild(outer)
+
+    const widthContained = inner.offsetWidth
+    outer.style.overflow = 'scroll'
+    let widthScroll = inner.offsetWidth
+
+    if (widthContained === widthScroll) {
+      widthScroll = outer.clientWidth
+    }
+
+    document.body.removeChild(outer)
+
+    cachedScrollBarSize = widthContained - widthScroll
+  }
+  return cachedScrollBarSize
 }
