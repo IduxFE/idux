@@ -10,6 +10,7 @@ import type { DefineComponent, HTMLAttributes, PropType } from 'vue'
 
 export const alertProps = {
   banner: { type: Boolean, default: false },
+  centered: { type: Boolean, default: undefined },
   closable: { type: Boolean, default: undefined },
   closeIcon: { type: String, default: 'close' },
   description: String,

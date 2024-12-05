@@ -52,6 +52,7 @@ export const defaultConfig: GlobalConfig = {
   },
 
   alert: {
+    centered: false,
     closable: false,
     icon: {
       success: 'check-circle',

@@ -5,6 +5,7 @@
 | 名称 | 说明 | 类型  | 默认值 | 全局配置 | 备注 |
 | --- | --- | --- | --- | --- | --- |
 | `banner` | 是否用作顶部提示 | `boolean` | `false` | - |- |
+| `centered` | 信息提示是否居中 | `boolean` | `false` | ✅ |- |
 | `closable` | 信息提示是否可关闭 | `boolean` | `false` | ✅ |- |
 | `closeIcon` | 自定义关闭按钮 | `string \| #closeIcon` | `close` | - | - |
 | `description` | 辅助性文字介绍 | `string \| #description` | - | - |- |
