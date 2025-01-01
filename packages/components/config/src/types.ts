@@ -133,6 +133,7 @@ export interface ThemeConfig extends DeepPartialThemeTokens {
 }
 
 export interface AlertConfig {
+  centered: boolean
   closable: boolean
   icon: string | Partial<Record<AlertType, string>>
 }

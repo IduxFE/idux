@@ -35,6 +35,12 @@ describe('Alert', () => {
     expect(wrapper.find('.ix-alert').classes()).toContain('ix-alert-banner')
   })
 
+  test('props centered work', async () => {
+    const wrapper = AlertMount({ props: { centered: true } })
+
+    expect(wrapper.find('.ix-alert').classes()).toContain('ix-alert-centered')
+  })
+
   test('props icon work', async () => {
     const wrapper = AlertMount({ props: { icon: 'bug' } })
 

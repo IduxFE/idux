@@ -25,6 +25,10 @@
     border-bottom-color: var(--ix-color-border-secondary);
   }
 
+  &-centered {
+    justify-content: center;
+  }
+
   &-icon {
     margin-right: var(--ix-margin-size-xs);
   }
@@ -46,8 +50,11 @@
   }
 
   &-content {
-    flex: 1;
     min-width: 0;
+  }
+
+  &:not(&-centered) &-content {
+    flex: 1;
   }
 
   &-description {

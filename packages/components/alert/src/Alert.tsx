@@ -71,6 +71,7 @@ export default defineComponent({
         [prefixCls]: true,
         [`${prefixCls}-${props.type}`]: true,
         [`${prefixCls}-banner`]: props.banner,
+        [`${prefixCls}-centered`]: props.centered || config.centered,
         [`${prefixCls}-with-description`]: slots.description || props.description,
       })
     })
