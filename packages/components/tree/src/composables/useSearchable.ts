@@ -5,9 +5,9 @@
  * found in the LICENSE file at https://github.com/IDuxFE/idux/blob/main/LICENSE
  */
 
-import { type ComputedRef, computed } from 'vue'
+import { type ComputedRef, computed, watch } from 'vue'
 
-import { NoopArray, type VKey } from '@idux/cdk/utils'
+import { type VKey, useState } from '@idux/cdk/utils'
 
 import { type MergedNode } from './useDataSource'
 import { type TreeNode, type TreeProps } from '../types'
@@ -23,21 +23,26 @@ export function useSearchable(
 ): SearchableContext {
   const mergedSearchFn = useSearchFn(props, mergedLabelKey)
 
-  const searchedKeys = computed(() => {
-    const { searchValue } = props
-    if (!searchValue) {
-      return NoopArray as unknown as VKey[]
-    }
-    const searchFn = mergedSearchFn.value
-    const keys: VKey[] = []
-    mergedNodeMap.value.forEach(node => {
-      if (searchFn(node.rawNode, searchValue)) {
-        keys.push(node.key)
-      }
-    })
+  const [searchedKeys, setSearchedKeys] = useState<VKey[]>([])
 
-    return keys
-  })
+  watch(
+    () => props.searchValue,
+    searchValue => {
+      const searchFn = mergedSearchFn.value
+      const keys: VKey[] = []
+      if (searchValue) {
+        mergedNodeMap.value.forEach(node => {
+          if (searchFn(node.rawNode, searchValue)) {
+            keys.push(node.key)
+          }
+        })
+      }
+      setSearchedKeys(keys)
+    },
+    {
+      immediate: true,
+    },
+  )
 
   return { searchedKeys }
 }
