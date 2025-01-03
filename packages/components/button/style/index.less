@@ -65,8 +65,16 @@
     display: inline-block;
   }
 
-  > .@{icon-prefix} + span {
-    margin-left: var(--ix-margin-size-xs);
+  &-icon-start {
+    span {
+      margin-left: var(--ix-margin-size-xs);
+    }
+  }
+
+  &-icon-end {
+    span {
+      margin-right: var(--ix-margin-size-xs);
+    }
   }
 
   &-xs {

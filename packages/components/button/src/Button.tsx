@@ -49,6 +49,7 @@ export default defineComponent({
         ghost = groupProps.ghost,
         loading,
         icon,
+        iconPosition,
         shape = groupProps.shape,
       } = props
       const prefixCls = mergedPrefixCls.value
@@ -62,6 +63,7 @@ export default defineComponent({
         [`${prefixCls}-ghost`]: ghost,
         [`${prefixCls}-loading`]: loading,
         [`${prefixCls}-icon-only`]: !slots.default && (icon || loading || slots.icon),
+        [`${prefixCls}-icon-${iconPosition}`]: slots.default && (icon || loading || slots.icon),
         [`${prefixCls}-${mode.value}`]: mode.value,
         [`${prefixCls}-${shape}`]: !!shape,
         [`${prefixCls}-${size.value}`]: true,
@@ -82,18 +84,29 @@ export default defineComponent({
     }
 
     return () => {
-      const { loading, icon, type } = props
+      const { loading, icon, iconPosition, type } = props
 
       const children: VNodeChild[] = []
-      if (loading) {
-        children.push(<IxIcon name="loading"></IxIcon>)
-      } else if (slots.icon) {
-        children.push(slots.icon())
-      } else if (icon) {
-        children.push(<IxIcon name={icon}></IxIcon>)
+
+      const renderIcon = () => {
+        if (loading) {
+          return <IxIcon name="loading"></IxIcon>
+        }
+        if (slots.icon) {
+          return slots.icon()
+        }
+        if (icon) {
+          return <IxIcon name={icon}></IxIcon>
+        }
+        return null
       }
-      if (slots.default) {
-        children.push(<span>{slots.default()}</span>)
+
+      const nodesArr: VNodeChild[] = [renderIcon(), slots.default ? <span>{slots.default()}</span> : null]
+
+      if (iconPosition === 'start') {
+        children.push(...nodesArr)
+      } else if (iconPosition === 'end') {
+        children.push(...nodesArr.reverse())
       }
 
       // 只有在 mode = 'link' 且设置了相关的 attrs 时，才渲染成 a 标签

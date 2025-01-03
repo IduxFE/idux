@@ -12,6 +12,7 @@
 | `disabled` | 设置禁用状态 | `boolean` | - | - |- |
 | `ghost` | 设置幽灵状态 | `boolean` | - | - |- |
 | `icon` | 设置图标类型 | `string` | - | - | `loading` 为 `true` 时无效 |
+| `iconPosition` | 设置图标位置 | `'start' \| 'end'` | `'start'` | - | - |
 | `loading` | 设置加载中状态 | `boolean` |  - | - |- |
 | `mode` | 设置按钮种类 | `'primary' \| 'default' \| 'dashed' \| 'text' \| 'link'` | `'default'` | - |- |
 | `shape` | 设置按钮形状 | `'square' \| 'circle' \| 'round'` | - | - |- |

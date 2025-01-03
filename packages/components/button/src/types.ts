@@ -13,6 +13,7 @@ export type ButtonMode = 'primary' | 'default' | 'dashed' | 'text' | 'link'
 export type ButtonShape = 'circle' | 'round' | 'square'
 export type ButtonSize = 'lg' | 'xl' | 'md' | 'sm' | 'xs'
 export type ButtonType = 'button' | 'submit' | 'reset'
+export type ButtonIconPosition = 'start' | 'end'
 
 export const buttonProps = {
   block: { type: Boolean, default: undefined },
@@ -20,6 +21,7 @@ export const buttonProps = {
   disabled: { type: Boolean, default: undefined },
   ghost: { type: Boolean, default: undefined },
   icon: String,
+  iconPosition: { type: String as PropType<ButtonIconPosition>, default: 'start' },
   loading: { type: Boolean, default: undefined },
   mode: String as PropType<ButtonMode>,
   size: String as PropType<ButtonSize>,
